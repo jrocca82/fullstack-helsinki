@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fullstack: Part 0</title>
@@ -9,8 +10,9 @@
   <body>
     <h1>Fullstack: Part 0</h1>
     <h3>0.4: New note diagram</h3>
-    <pre class="mermaid">
+    <div class="mermaid">
       sequenceDiagram
+      participant user
       participant browser
       participant server
   
@@ -35,18 +37,119 @@
       activate server
       server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
       deactivate server
+
+      Note right of browser: The browser executes the callback function that renders the notes
+
+      user->>browser: User enters data into the input field
+      activate browser
+      user->>browser: User hits save button
+      deactivate browser
+
+
+      browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+      activate server
+      server-->>browser: {note: `${userText}`}
+      deactivate server
+
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+      activate server
+      server-->>browser: HTML document
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+      activate server
+      server-->>browser: the css file
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+      activate server
+      server-->>browser: the JavaScript file
+      deactivate server
+  
+      Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+      activate server
+      server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+      deactivate server
+
+      Note right of browser: The browser executes the callback function that renders the notes with the new note at the bottom
+    </div>
+
+    <h3>0.5: Single page app diagram</h3>
+    <div class="mermaid">
+      sequenceDiagram
+      participant browser
+      participant server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+      activate server
+      server-->>browser: HTML document
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+      activate server
+      server-->>browser: the css file
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+      activate server
+      server-->>browser: the JavaScript file
+      deactivate server
+  
+      Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+      activate server
+      server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+      deactivate server
   
       Note right of browser: The browser executes the callback function that renders the notes
-    </pre>
+    </div>
 
-    <h2>And here is another:</h2>
-    <pre class="mermaid">
-            graph TD 
-            A[Client] -->|tcp_123| B
-            B(Load Balancer) 
-            B -->|tcp_456| C[Server1] 
-            B -->|tcp_456| D[Server2]
-    </pre>
+    <h3>0.6: New note in Single page app diagram</h3>
+    <div class="mermaid">
+      sequenceDiagram
+      participant user
+      participant browser
+      participant server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+      activate server
+      server-->>browser: HTML document
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+      activate server
+      server-->>browser: the css file
+      deactivate server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+      activate server
+      server-->>browser: the JavaScript file
+      deactivate server
+  
+      Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+  
+      browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+      activate server
+      server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+      deactivate server
+
+      Note right of browser: The browser executes the callback function that renders the notes
+
+      user->>browser: User enters data into the input field
+      activate browser
+      user->>browser: User hits save button
+      deactivate browser
+
+      browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+      activate server
+      server-->>browser: {content: `${userText}`, date: `Date`}
+      deactivate server
+
+      Note right of browser: The new note is rendered at the bottom of the list
+    </div>
 
     <script type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";

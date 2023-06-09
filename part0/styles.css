@@ -1,0 +1,26 @@
+html, body {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 2rem;
+  border-bottom: solid 1px black;
+  width: 100%;
+  text-align: center;
+}
+
+div {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
