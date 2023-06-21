@@ -1,49 +1,77 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import FilterInput from "./components/FilterInput";
 import AddNewForm from "./components/AddNewForm";
 import PhonebookList from "./components/PhonebookList";
+import { create, getAll, updatePerson } from "./backend/Axios";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newPerson, setNewPerson] = useState({
+    name: undefined,
+    number: undefined,
+  });
   const [filter, setFilter] = useState("");
+
+  const [isAddSuccessful, setIsAddSuccessful] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (newName === "" || newPhoneNumber === "") {
+    if (!newPerson.name || !newPerson.number) {
       return;
     }
+
     for (let i = 0; i < persons.length; i++) {
-      if (newName.toLowerCase() === persons[i].name.toLowerCase()) {
-        alert(`${newName} is already added to phonebook`);
+      if (newPerson.name.toLowerCase() === persons[i].name.toLowerCase()) {
+        updatePerson({ ...persons[i], number: newPerson.number });
+        setNewPerson({ name: undefined, number: undefined });
         return;
       }
     }
-    setPersons(persons.concat({ name: newName, number: newPhoneNumber }));
-    setNewName("");
-    setNewPhoneNumber("");
+
+    create(newPerson)
+      .then((response) => {
+        setPersons(persons.concat(response));
+        setIsAddSuccessful(true);
+        setTimeout(() => {
+          setIsAddSuccessful(true);
+        }, 5000);
+      })
+      .catch((e) => {
+        setErrorMessage(`Error adding ${newPerson.name}`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
+
+    setNewPerson({ name: undefined, number: undefined });
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    getAll()
+      .then((response) => {
+        setPersons(response);
+      })
+      .catch((e) => console.log("fail", e));
   }, []);
 
   return (
     <div>
       <h1>Phonebook</h1>
       <FilterInput filter={filter} setFilter={setFilter} />
+      {isAddSuccessful && <h2 className="successMessage">Successfully added {newPerson.name}</h2>}
+      {errorMessage && <h2 className="errorMessage">{errorMessage}</h2>}
       <AddNewForm
-        newName={newName}
-        setNewName={setNewName}
-        newPhoneNumber={newPhoneNumber}
-        setNewPhoneNumber={setNewPhoneNumber}
+        newPerson={newPerson}
+        setNewPerson={setNewPerson}
         onSubmit={onSubmit}
       />
-      <PhonebookList filter={filter} persons={persons} />
+      <PhonebookList
+        filter={filter}
+        persons={persons}
+        setPersons={setPersons}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 };

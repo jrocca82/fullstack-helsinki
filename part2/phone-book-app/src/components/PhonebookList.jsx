@@ -1,6 +1,7 @@
 import React from "react";
+import Person from "./Person";
 
-const PhonebookList = ({ filter, persons }) => (
+const PhonebookList = ({ filter, persons, setPersons, setErrorMessage }) => (
   <>
     <h2>Numbers</h2>
     {filter
@@ -14,9 +15,13 @@ const PhonebookList = ({ filter, persons }) => (
             </p>
           ))
       : persons.map((person) => (
-          <p key={person.id}>
-            {person.name} {person.number}
-          </p>
+          <Person
+            key={person.id}
+            setErrorMessage={setErrorMessage}
+            person={person}
+            persons={persons}
+            setPersons={setPersons}
+          />
         ))}
   </>
 );
