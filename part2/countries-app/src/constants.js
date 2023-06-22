@@ -1,0 +1,1 @@
+export const longErrorMessage = "Too many results. Please filter your search."
